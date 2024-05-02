@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
-import { Home } from "@/components/Home";
+
 import { Layout } from "@/layouts/Layout";
+import { HomePage } from "./pages/HomePage";
 export const AppRoutes = () => {
   return (
     <Routes>
@@ -8,7 +9,7 @@ export const AppRoutes = () => {
         path="/"
         element={
           <Layout>
-            <Home />
+            <HomePage />
           </Layout>
         }
       />
