@@ -26,6 +26,9 @@ importers:
       '@radix-ui/react-slot':
         specifier: ^1.0.2
         version: 1.0.2(@types/react@18.3.0)(react@18.3.0)
+      '@tanstack/react-query':
+        specifier: ^5.32.1
+        version: 5.32.1(react@18.3.0)
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.0
@@ -815,6 +818,14 @@ packages:
     resolution: {integrity: sha512-YunpoOAyGLDseanENHmbFvQSfVL5BxW3k7hhy0eN4rb3gS/ct75dVD0EXOWIqFT/nE8XYW6LP6vz6ctKRi0k9A==}
     cpu: [x64]
     os: [win32]
+
+  '@tanstack/query-core@5.32.1':
+    resolution: {integrity: sha512-mCWa1wdGb1jiny4+qYegbSeadcFj+Nq65KFSs4A1DRveoIq7SrTwUhqu7hrB6d54cQH5x59DfJvxusn3w1Cj/g==}
+
+  '@tanstack/react-query@5.32.1':
+    resolution: {integrity: sha512-+nXLMB0JK0XwTJ+lQt49DPNLrbSppni9N5W5yMR085yW3YaRKRUFhfVTER3TvQd1UycHpoGPFnt1gHiijXERAg==}
+    peerDependencies:
+      react: ^18.0.0
 
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
@@ -2541,6 +2552,13 @@ snapshots:
 
   '@rollup/rollup-win32-x64-msvc@4.16.4':
     optional: true
+
+  '@tanstack/query-core@5.32.1': {}
+
+  '@tanstack/react-query@5.32.1(react@18.3.0)':
+    dependencies:
+      '@tanstack/query-core': 5.32.1
+      react: 18.3.0
 
   '@types/babel__core@7.20.5':
     dependencies:
