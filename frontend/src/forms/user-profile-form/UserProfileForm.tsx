@@ -45,6 +45,7 @@ export const UserProfileForm = ({ onSave, isLoading }: Props) => {
   const form = useForm<UserFormData>({
     resolver: zodResolver(formSchema),
   });
+  console.log(isLoading)
   return (
     <Form {...form}>
       <form
