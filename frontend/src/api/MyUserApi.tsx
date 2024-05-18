@@ -1,5 +1,7 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useMutation } from "@tanstack/react-query";
+import { toast } from "sonner";
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 type CreateUserRequest = {
@@ -31,7 +33,6 @@ export const useCreateMyUser = () => {
     isPending,
     isError,
     isSuccess,
-    isLoading
   } = useMutation({ mutationFn: createMyUserRequest });
 
   return {
@@ -39,7 +40,6 @@ export const useCreateMyUser = () => {
     isError,
     isPending,
     isSuccess,
-    isLoading
   };
 };
 
@@ -74,15 +74,22 @@ export const useUpdateMyUser = () => {
     isPending,
     isError,
     isSuccess,
-    isLoading,
+    error,
     reset,
   } = useMutation({ mutationFn: updateMyUserRequest });
+
+  if (isSuccess) {
+    toast.success("User profile updated");
+  }
+  if (error) {
+    toast.error("Error updating user profile:" + error.toString());
+    reset();
+  }
 
   return {
     updateUser,
     isPending,
     isError,
     isSuccess,
-    isLoading
   };
 };

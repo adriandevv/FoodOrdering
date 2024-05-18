@@ -8,6 +8,8 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
+import { Toaster } from "sonner";
+
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,6 +25,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <QueryClientProvider client={queryClient}>
         <Auth0ProviderWithNAvigate>
           <AppRoutes />
+          <Toaster  visibleToasts={1} position="top-right" richColors/>
         </Auth0ProviderWithNAvigate>
       </QueryClientProvider>
     </Router>
