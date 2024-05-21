@@ -1,5 +1,5 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -50,6 +50,40 @@ type UpdateMyUserRequest = {
   country: string;
 };
 
+export const useGetMyUser = () => {
+  const { getAccessTokenSilently } = useAuth0();
+
+  const getMyUserRequest = async () => {
+    const token = await getAccessTokenSilently();
+    const response = await fetch(`${API_BASE_URL}/api/my/user`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Error getting user");
+    }
+    return response.json();
+  };
+
+  const {
+    data: currentUser,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({ queryKey: ["fetchCurrentUser"], queryFn: getMyUserRequest });
+  if (error) {
+    toast.error("Error fetching user profile:" + error.toString());
+  }
+  return {
+    currentUser,
+    isLoading,
+    isError,
+    error,
+  };
+};
 export const useUpdateMyUser = () => {
   const { getAccessTokenSilently } = useAuth0();
 
