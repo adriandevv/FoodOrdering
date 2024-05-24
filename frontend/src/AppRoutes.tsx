@@ -1,8 +1,9 @@
 import { Routes, Route } from "react-router-dom";
-import {UserProfilePage} from "./pages/UserProfilePage";
+import { UserProfilePage } from "./pages/UserProfilePage";
 import { Layout } from "@/layouts/Layout";
 import { HomePage } from "./pages/HomePage";
 import { AuthCallbackPage } from "./pages/AuthCallbackPage";
+import { ProtectedRoute } from "./auth/ProtectedRoute";
 
 export const AppRoutes = () => {
   return (
@@ -15,8 +16,17 @@ export const AppRoutes = () => {
           </Layout>
         }
       />
-      <Route path="/auth-callback" element={<AuthCallbackPage/>} />
-      <Route path="/user-profile" element={<Layout><UserProfilePage/></Layout>} />
+      <Route path="/auth-callback" element={<AuthCallbackPage />} />
+      <Route element={<ProtectedRoute />}>
+        <Route
+          path="/user-profile"
+          element={
+            <Layout>
+              <UserProfilePage />{" "}
+            </Layout>
+          }
+        />
+      </Route>
       <Route path="*" element={<div>Not Found</div>} />
     </Routes>
   );

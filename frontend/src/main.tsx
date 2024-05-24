@@ -25,7 +25,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <QueryClientProvider client={queryClient}>
         <Auth0ProviderWithNAvigate>
           <AppRoutes />
-          <Toaster  visibleToasts={1} position="top-right" richColors/>
+          <Toaster  visibleToasts={1} position="top-right" richColors duration={1500} />
         </Auth0ProviderWithNAvigate>
       </QueryClientProvider>
     </Router>
