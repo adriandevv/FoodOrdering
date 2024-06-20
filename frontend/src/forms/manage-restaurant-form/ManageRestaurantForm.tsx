@@ -9,6 +9,8 @@ import { MenuSection } from "./MenuSection";
 import { ImageSection } from "./ImageSection";
 import { Button } from "@/components/ui/button";
 import { LoadingButton } from "@/components/LoadingButton";
+import { Restaurant } from "@/types";
+import { useEffect } from "react";
 
 const formSchema = z.object({
   restaurantName: z.string({
@@ -20,14 +22,18 @@ const formSchema = z.object({
   country: z.string({
     required_error: "Country is required",
   }),
-  deliveryPrice: z.coerce.number({
-    required_error: "Delivery price is required",
-    invalid_type_error: "Delivery price must be a number",
-  }).min(1, { message: "Delivery price must be greater than or equal to 0" }),
-  estimatedDeliveryTime: z.coerce.number({
-    required_error: "Estimated delivery time is required",
-    invalid_type_error: "Estimated delivery time must be a number",
-  }).min(1, { message: "Estimated delivery time must be greater than 0" }),
+  deliveryPrice: z.coerce
+    .number({
+      required_error: "Delivery price is required",
+      invalid_type_error: "Delivery price must be a number",
+    })
+    .min(1, { message: "Delivery price must be greater than or equal to 0" }),
+  estimatedDeliveryTime: z.coerce
+    .number({
+      required_error: "Estimated delivery time is required",
+      invalid_type_error: "Estimated delivery time must be a number",
+    })
+    .min(1, { message: "Estimated delivery time must be greater than 0" }),
   cuisines: z
     .array(z.string())
     .nonempty({ message: "please select at least one item" }),
@@ -44,48 +50,71 @@ type restaurantFormData = z.infer<typeof formSchema>;
 type Props = {
   onSave: (restaurantFormData: FormData) => void;
   isLoading: boolean;
+  restaurant?: Restaurant;
 };
 
-const ManageRestaurantForm = ({ onSave, isLoading }: Props) => {
+const ManageRestaurantForm = ({ onSave, isLoading, restaurant }: Props) => {
   const form = useForm<restaurantFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-     restaurantName: "",
+      restaurantName: "",
       city: "",
       country: "",
       deliveryPrice: 0,
       estimatedDeliveryTime: 0,
       cuisines: [],
-      menuItems: [{ name: "", price: 0 }]
+      menuItems: [{ name: "", price: 0 }],
     },
   });
+
+  useEffect(() => {
+    if (!restaurant) {
+      return;
+    }
+    const deliveryPriceFormatted = parseInt(
+      (restaurant.deliveryPrice / 100).toFixed(2)
+    );
+    const menuItemsFormatted = restaurant.menuItems.map((item) => ({
+      ...item,
+      price: parseInt((item.price / 100).toFixed(2)),
+    }));
+    const updatedRestaurant = {
+      ...restaurant,
+      deliveryPrice: deliveryPriceFormatted,
+      menuItems: menuItemsFormatted,
+    };
+    form.reset(updatedRestaurant);
+    
+  }, [restaurant,form]);
+
   const onSubmit = (formDataJson: restaurantFormData) => {
     // TODO - convert formDataJson to FormData object
     const formData = new FormData();
     formData.append("restaurantName", formDataJson.restaurantName);
     formData.append("city", formDataJson.city);
     formData.append("country", formDataJson.country);
-    formData.append("deliveryPrice", (formDataJson.deliveryPrice*100).toString());
+    formData.append(
+      "deliveryPrice",
+      (formDataJson.deliveryPrice * 100).toString()
+    );
     formData.append(
       "estimatedDeliveryTime",
       formDataJson.estimatedDeliveryTime.toString()
     );
-   formDataJson.cuisines.forEach((cuisine, index) => {
+    formDataJson.cuisines.forEach((cuisine, index) => {
       formData.append(`cuisines[${index}]`, cuisine);
-    }
-    );
+    });
     formDataJson.menuItems.forEach((menuItem, index) => {
       formData.append(`menuItems[${index}][name]`, menuItem.name);
       formData.append(
         `menuItems[${index}][price]`,
-        (menuItem.price*100).toString()
+        (menuItem.price * 100).toString()
       );
     });
     formData.append("imageFile", formDataJson.imageFile);
     // formData.forEach((value, key) => console.log(key, value));
     // console.log(formDataJson);
     onSave(formData);
-
   };
 
   return (
