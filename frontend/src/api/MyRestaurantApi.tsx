@@ -8,7 +8,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 export const useGetMyRestaurant = () => {
   const { getAccessTokenSilently } = useAuth0();
 
-  const getMyRestaurantRequest = async (): Promise<Restaurant[]> => {
+  const getMyRestaurantRequest = async (): Promise<Restaurant> => {
     const accessToken = await getAccessTokenSilently();
     const res = await fetch(`${API_BASE_URL}/api/my/restaurant`, {
       method: "GET",
@@ -76,3 +76,41 @@ export const useCreateMyRestaurant = () => {
     isSuccess,
   };
 };
+
+export const useUpdateMyRestaurant = () => {
+  const { getAccessTokenSilently } = useAuth0();
+
+  const updateMyRestaurantRequest = async (
+    restaurantFormData: FormData
+  ): Promise<Restaurant> => {
+    const accessToken = await getAccessTokenSilently();
+    const res = await fetch(`${API_BASE_URL}/api/my/restaurant`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: restaurantFormData,
+    });
+    if (!res.ok) {
+      throw new Error("Error updating restaurant");
+    }
+    return res.json();
+  };
+
+  const {
+    mutateAsync: updateRestaurant,
+    isPending,
+    isError,
+    isSuccess,
+  } = useMutation({ mutationFn: updateMyRestaurantRequest });
+
+  if (isSuccess) toast.success("Restaurant updated successfully");
+  if (isError) toast.error("Error updating restaurant");
+
+  return {
+    updateRestaurant,
+    isPending,
+    isError,
+    isSuccess,
+  };
+}
