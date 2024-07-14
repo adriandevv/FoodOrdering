@@ -7,7 +7,7 @@ export type User = {
   country: string;
 };
 
-type MenuItem = {
+export type MenuItem = {
   _id: string;
   name: string;
   price: number;
@@ -27,7 +27,7 @@ export type Restaurant = {
 };
 export type RestaurantSearchResponse = {
   data: Restaurant[];
-  pagination :{
+  pagination: {
     total: number;
     page: number;
     pages: number
