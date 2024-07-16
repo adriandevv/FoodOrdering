@@ -22,10 +22,10 @@ export const DetailPage = () => {
         return <div>Invalid restaurant ID</div>;
     }
     const { restaurant, isPending } = useGetRestaurant(restaurantId);
+    const [cartItems, setCartItems] = useState<CartItem[]>([]);
     if (isPending || !restaurant) {
         return <div>Loading...</div>;
     }
-    const [cartItems, setCartItems] = useState<CartItem[]>([]);
     const addTocart = (menuItem: MenuItemType) => {
         setCartItems((prevCartItems) => {
             const existingItem = prevCartItems.find((item) => item._id === menuItem._id);
@@ -50,6 +50,14 @@ export const DetailPage = () => {
         })
     }
 
+    const removeFromCart = (menuItem: CartItem) => {
+        setCartItems((prevCartItems) => {
+            //delete item from cart
+            return prevCartItems.filter((item) => item._id !== menuItem._id)
+        })
+
+    }
+
 
     return (
         <div className='flex flex-col gap-10'>
@@ -65,12 +73,12 @@ export const DetailPage = () => {
                         Menu
                     </span>
                     {restaurant.menuItems.map((menuItem) => (
-                        <MenuItem menuItem={menuItem} addToCart={() => addTocart(menuItem)} />
+                        <MenuItem key={menuItem._id} menuItem={menuItem} addToCart={() => addTocart(menuItem)} />
                     ))}
                 </div>
                 <div className="">
                     <Card>
-                        <OrderSummary restaurant={restaurant} cartItems={cartItems} />
+                        <OrderSummary restaurant={restaurant} cartItems={cartItems} removeFromCart={removeFromCart} />
                     </Card>
                 </div>
             </div>

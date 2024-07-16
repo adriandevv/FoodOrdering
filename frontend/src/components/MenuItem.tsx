@@ -1,9 +1,11 @@
 import { MenuItem as menuItem } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 
+
 type props = {
     menuItem: menuItem;
     addToCart: () => void;
+
 }
 
 export const MenuItem = ({ menuItem, addToCart }: props) => {
