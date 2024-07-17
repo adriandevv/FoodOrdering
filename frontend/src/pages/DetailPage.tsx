@@ -8,6 +8,7 @@ import { AspectRatio } from '@radix-ui/react-aspect-ratio';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { CheckoutButton } from '@/components/CheckoutButton';
+import { UserFormData } from '@/forms/user-profile-form/UserProfileForm';
 
 
 export type CartItem = {
@@ -77,6 +78,9 @@ export const DetailPage = () => {
         })
 
     }
+    const onCheckout = (userFormData: UserFormData) => {
+        console.log("userFormData", userFormData)
+    }
 
 
 
@@ -101,7 +105,7 @@ export const DetailPage = () => {
                     <Card>
                         <OrderSummary restaurant={restaurant} cartItems={cartItems} removeFromCart={removeFromCart} />
                         <CardFooter>
-                            <CheckoutButton />
+                            <CheckoutButton disabled={cartItems.length === 0} onCheckout={onCheckout} />
                         </CardFooter>
                     </Card>
                 </div>

@@ -36,15 +36,17 @@ const formSchema = z.object({
     .max(50, "country name is too long"),
 });
 
-type UserFormData = z.infer<typeof formSchema>;
+export type UserFormData = z.infer<typeof formSchema>;
 
 type Props = {
   onSave: (userProfileData: UserFormData) => void;
   isLoading: boolean;
-  currentUser: User;
+  currentUser: User | undefined;
+  title?: string;
+  buttonText?: string;
 };
 
-export const UserProfileForm = ({ onSave, isLoading, currentUser }: Props) => {
+export const UserProfileForm = ({ onSave, isLoading, currentUser, title = "User Profile", buttonText = "Submit" }: Props) => {
   const form = useForm<UserFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: currentUser,
@@ -59,7 +61,7 @@ export const UserProfileForm = ({ onSave, isLoading, currentUser }: Props) => {
         className="space-y-4 bg-gray-50 rounded-lg p-5 md:p-10 max-w-screen-md mx-auto "
       >
         <div>
-          <h2 className="text-2xl font-bold "> User Profile Form</h2>
+          <h2 className="text-2xl font-bold ">{title}</h2>
           <FormDescription>
             View and change your profile information here.
           </FormDescription>
@@ -136,7 +138,7 @@ export const UserProfileForm = ({ onSave, isLoading, currentUser }: Props) => {
           <LoadingButton />
         ) : (
           <Button type="submit" className="bg-orange-500">
-            Submit
+            {buttonText}
           </Button>
         )}
       </form>
