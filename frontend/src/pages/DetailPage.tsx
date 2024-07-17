@@ -1,12 +1,13 @@
 import { useGetRestaurant } from '@/api/RestaurantApi';
 import { OrderSummary } from '@/components/OrderSummary';
 import { RestaurantInfo } from '@/components/RestaurantInfo';
-import { Card } from '@/components/ui/card';
+import { Card, CardFooter } from '@/components/ui/card';
 import { MenuItem } from '@/components/MenuItem';
 import { MenuItem as MenuItemType } from '@/types';
 import { AspectRatio } from '@radix-ui/react-aspect-ratio';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { CheckoutButton } from '@/components/CheckoutButton';
 
 
 export type CartItem = {
@@ -17,46 +18,66 @@ export type CartItem = {
 }
 
 export const DetailPage = () => {
+
     const { restaurantId } = useParams<{ restaurantId: string }>();
     if (!restaurantId) {
         return <div>Invalid restaurant ID</div>;
     }
     const { restaurant, isPending } = useGetRestaurant(restaurantId);
-    const [cartItems, setCartItems] = useState<CartItem[]>([]);
+    const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+        const storedCartItems = sessionStorage.getItem(`cartItems-${restaurantId}`);
+        if (storedCartItems) {
+            return JSON.parse(storedCartItems)
+        }
+        return []
+    });
     if (isPending || !restaurant) {
         return <div>Loading...</div>;
     }
+    const setStorage = (cartItems: Array<CartItem>) => {
+        sessionStorage.setItem(`cartItems-${restaurantId}`, JSON.stringify(cartItems))
+    }
+
     const addTocart = (menuItem: MenuItemType) => {
         setCartItems((prevCartItems) => {
             const existingItem = prevCartItems.find((item) => item._id === menuItem._id);
             if (existingItem) {
-                return prevCartItems.map((item) => {
+                const res = prevCartItems.map((item) => {
                     if (item._id === menuItem._id) {
+
                         return {
                             ...item,
                             quantity: item.quantity + 1
                         }
                     }
+
                     return item;
                 })
+                setStorage(res)
+                return res;
             }
-            return [
+            const res = [
                 ...prevCartItems,
                 {
                     ...menuItem,
                     quantity: 1
                 }
             ]
+            setStorage(res)
+            return res;
         })
     }
 
     const removeFromCart = (menuItem: CartItem) => {
         setCartItems((prevCartItems) => {
             //delete item from cart
-            return prevCartItems.filter((item) => item._id !== menuItem._id)
+            const res = prevCartItems.filter((item) => item._id !== menuItem._id)
+            setStorage(res)
+            return res;
         })
 
     }
+
 
 
     return (
@@ -79,6 +100,9 @@ export const DetailPage = () => {
                 <div className="">
                     <Card>
                         <OrderSummary restaurant={restaurant} cartItems={cartItems} removeFromCart={removeFromCart} />
+                        <CardFooter>
+                            <CheckoutButton />
+                        </CardFooter>
                     </Card>
                 </div>
             </div>
