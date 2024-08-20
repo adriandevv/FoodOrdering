@@ -7,6 +7,6 @@ router.post("/checkout/create-checkout-session", jwtCheck, jwtParse, OrderContro
 
 router.post("/checkout/webhook", OrderController.stripeWebhookHandler);
 
-router.get("/my/orders", jwtCheck, jwtParse, OrderController.getMyOrders);
+router.get("/", jwtCheck, jwtParse, OrderController.getMyOrders);
 
 export default router;

@@ -30,8 +30,8 @@ export type RestaurantSearchResponse = {
   pagination: {
     total: number;
     page: number;
-    pages: number
-  }
+    pages: number;
+  };
 };
 
 export type CheckoutSessionRequest = {
@@ -48,3 +48,32 @@ export type CheckoutSessionRequest = {
   };
   restaurantId: string;
 };
+
+export type Order = {
+  _id: string;
+  restaurant: Restaurant;
+  user: User;
+  cartItems: {
+    menuItem: MenuItem;
+    name: string;
+    quantity: number;
+  }[];
+  deliveryDetails: {
+    email: string;
+    name: string;
+    addressLine1: string;
+    city: string;
+  };
+  totalAmount: number;
+  status: OrderStatus;
+  createdAt: string;
+  restaurantId: string;
+};
+
+export type OrderStatus =
+  | "placed"
+  | "paid"
+  | "inProgress"
+  | "outForDelivery"
+  | "delivered"
+  | "cancelled";
