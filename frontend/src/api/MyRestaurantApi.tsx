@@ -1,4 +1,4 @@
-import { Restaurant } from "@/types";
+import { Order, Restaurant } from "@/types";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -32,7 +32,7 @@ export const useGetMyRestaurant = () => {
   });
 
   if (isError) toast.error("Error fetching restaurant");
-  
+
   return {
     restaurant,
     isLoading,
@@ -113,4 +113,37 @@ export const useUpdateMyRestaurant = () => {
     isError,
     isSuccess,
   };
-}
+};
+
+export const useGetMyRestaurantOrders = () => {
+  const { getAccessTokenSilently } = useAuth0();
+
+  const getMyRestaurantOrdersRequest = async (): Promise<Order[]> => {
+    const accessToken = await getAccessTokenSilently();
+    const res = await fetch(`${API_BASE_URL}/api/my/restaurant/orders`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    if (!res.ok) {
+      throw new Error("Error fetching orders");
+    }
+    return res.json();
+  };
+
+  const {
+    data: orders,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["fetchMyRestaurantOrders"],
+    queryFn: getMyRestaurantOrdersRequest,
+  });
+
+  return {
+    orders,
+    isLoading,
+    isError,
+  };
+};
