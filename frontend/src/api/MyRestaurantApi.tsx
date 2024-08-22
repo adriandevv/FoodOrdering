@@ -172,7 +172,7 @@ return res.json();
 }
 
 
-const {mutateAsync: updateOrderStatus, isError, isSuccess,reset} = useMutation({mutationFn: updateMyRestaurantOrderRequest});
+const {mutateAsync: updateRestaurantStatus, isError, isSuccess,reset, isPending} = useMutation({mutationFn: updateMyRestaurantOrderRequest});
 
 if (isSuccess) toast.success("Order status updated successfully");
 if (isError) {toast.error("Error updating order status")
@@ -180,7 +180,7 @@ reset();
 }
 
 return {
-  updateOrderStatus, isError, isSuccess
+  updateRestaurantStatus, isError, isPending
 }
 
 }
